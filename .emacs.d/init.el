@@ -21,6 +21,10 @@
 
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
+;; Enable Cua Mode
+(cua-mode t)
+(setq cua-enable-cua-keys nil)
+
 ;; For Auto Install
 (when (require 'auto-install nil t)
   (setq auto-install-directory "~/.emacs.d/elisp/")
@@ -29,12 +33,12 @@
   (auto-install-compatibility-setup))
 
 ;; Python mode
-(require 'python-mode)
-(autoload 'python-mode "python-mode" "Python Mode." t)
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-                                   interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
+(when (require 'python-mode nil t)
+  (autoload 'python-mode "python-mode" "Python Mode." t)
+  (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+  (setq interpreter-mode-alist (cons '("python" . python-mode)
+                                     interpreter-mode-alist))
+  (autoload 'python-mode "python-mode" "Python editing mode." t))
 
 ;; To save buffers which have shebang with enabling executable bits
 (add-hook 'after-save-hook
@@ -70,7 +74,9 @@
     (descbinds-anything-install))
 
   (add-to-list 'anything-sources 'anything-c-source-emacs-commands)
-  (define-key global-map (kbd "C-l") 'anything))
+  (add-to-list 'anything-sources 'anything-c-source-files-in-current-dir)
+  (define-key global-map (kbd "C-l") 'anything)
+  (define-key global-map (kbd "M-y") 'anything-show-kill-ring))
 
 ;; Misc
 (setq inhibit-startup-message t)
